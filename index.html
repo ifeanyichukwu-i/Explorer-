@@ -33,7 +33,9 @@ body{
   background:var(--bg);color:var(--ink2);
   font-family:'Inter',sans-serif;font-size:13px;line-height:1.5;
   min-height:100vh;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;width:100%;
 }
+.shell,.topbar-inner{width:100%}
 .mono{font-family:'IBM Plex Mono',monospace}
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-track{background:var(--panel2)}
@@ -113,14 +115,23 @@ a{color:inherit}
 
 .ext-links{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:640px}
 
-/* PLATFORM REDIRECT GRID */
+/* PLATFORM REDIRECT DROPDOWN */
 .platform-panel{
-  padding:14px 0 18px;border-bottom:1px solid var(--border);
+  padding:12px 0 16px;border-bottom:1px solid var(--border);
 }
-.platform-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px}
+.platform-toggle{
+  display:flex;align-items:center;gap:8px;
+  font-size:11.5px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:0.06em;
+  background:none;border:none;cursor:pointer;padding:6px 0;margin-bottom:0;
+  width:100%;justify-content:flex-start;
+}
+.platform-toggle:hover{color:var(--violet)}
 .platform-grid{
-  display:grid;grid-template-columns:repeat(8,1fr);gap:8px;
+  display:none;
+  grid-template-columns:repeat(4,1fr);gap:8px;
+  margin-top:10px;
 }
+.platform-grid.open{display:grid}
 .platform-item{
   display:flex;align-items:center;justify-content:center;gap:6px;
   font-size:12px;font-weight:600;color:var(--ink2);
@@ -130,7 +141,7 @@ a{color:inherit}
 .platform-item:hover{border-color:var(--violet);color:var(--violet);background:var(--violet-tint);transform:translateY(-1px)}
 .platform-emoji{font-size:14px;line-height:1}
 
-@media(max-width:1024px){.platform-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:1024px){.platform-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:640px){.platform-grid{grid-template-columns:repeat(2,1fr)}}
 .ext-link{
   font-size:11.5px;font-weight:600;color:var(--muted);border:1px solid var(--border-strong);
@@ -264,10 +275,57 @@ a{color:inherit}
   .term-col:last-child{border-bottom:none}
   .tape-list{max-height:400px}
 }
+
 @media(max-width:640px){
-  .identity-bar{flex-direction:column;align-items:flex-start}
-  .id-right{width:100%;justify-content:space-between}
-  .price-block{text-align:left}
+  body{font-size:12.5px}
+  .shell{padding:0 14px}
+  .topbar-inner{padding:0 14px}
+  .brand-text{font-size:13px}
+  .live-pill{font-size:10px;padding:4px 8px}
+  .sync-txt{display:none}
+  .refresh-btn{font-size:11px;padding:6px 9px}
+
+  .identity-bar{
+    flex-direction:column;align-items:stretch;
+    width:100%;gap:12px;
+  }
+  .id-left{width:100%}
+  .id-right{width:100%;justify-content:flex-start}
+  .price-block{text-align:left;width:100%}
+  .price-main{font-size:22px}
+
+  .mint-row{flex-wrap:wrap;width:100%}
+  .mint-addr{
+    max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    display:inline-block;vertical-align:middle;
+  }
+
+  .platform-toggle{font-size:11px}
+
+  .ticker-strip{grid-template-columns:repeat(2,1fr)}
+  .tick-cell{padding:10px 12px;border-right:1px solid var(--border)}
+  .tick-cell:nth-child(2n){border-right:none}
+  .tick-val{font-size:13px}
+
+  .term-col-head{padding:9px 12px}
+  .fact-row,.dist-block,.holder-row,.tape-row{padding-left:12px;padding-right:12px}
+
+  .holder-row{grid-template-columns:24px 1fr 70px;font-size:10.5px}
+  .holder-bal{display:none}
+  .holder-pct-wrap{gap:4px}
+  .holder-bar-track{width:36px}
+
+  .tape-row{grid-template-columns:34px 1fr 60px;font-size:10px}
+  .tape-addr{font-size:9.5px}
+  .tape-amt{font-size:8.5px}
+
+  .engine-cell{padding:14px 12px}
+  .engine-val{font-size:18px}
+
+  .chart-canvas-wrap{padding:10px;height:220px}
+  .chart-tabs-row{overflow-x:auto}
+
+  .footer{padding:1.2rem 14px;font-size:10px;word-break:break-all}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -339,10 +397,15 @@ a{color:inherit}
     <a class="ext-link primary" href="https://jup.ag/swap/SOL-BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ" target="_blank">Trade on Jupiter</a>
   </div>
 
-  <!-- PLATFORM REDIRECT GRID -->
+  <!-- PLATFORM REDIRECT DROPDOWN -->
   <div class="platform-panel">
-    <div class="platform-lbl">View $SURCHI on</div>
-    <div class="platform-grid">
+    <button class="platform-toggle" id="platformToggle" onclick="togglePlatforms()">
+      <span>View $SURCHI on</span>
+      <svg id="platformChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:15px;height:15px;transition:transform .2s">
+        <path d="M6 9l6 6 6-6"/>
+      </svg>
+    </button>
+    <div class="platform-grid" id="platformGrid">
       <a class="platform-item" href="https://gmgn.ai/sol/token/BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ" target="_blank">
         <span class="platform-emoji">🌵</span>GMGN
       </a>
@@ -360,9 +423,6 @@ a{color:inherit}
       </a>
       <a class="platform-item" href="https://rugcheck.xyz/tokens/BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ" target="_blank">
         <span class="platform-emoji">🛡</span>RugCheck
-      </a>
-      <a class="platform-item" href="https://www.dextools.io/app/en/solana/pair-explorer/BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ" target="_blank">
-        <span class="platform-emoji">🔧</span>DexTools
       </a>
       <a class="platform-item" href="https://app.bubblemaps.io/sol/token/BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ" target="_blank">
         <span class="platform-emoji">🔵</span>Bubblemaps
@@ -571,6 +631,12 @@ function copyMint(){
     b.textContent='Copied'; b.classList.add('copied');
     setTimeout(()=>{b.textContent='Copy'; b.classList.remove('copied')},2000);
   });
+}
+function togglePlatforms(){
+  const grid=document.getElementById('platformGrid');
+  const chevron=document.getElementById('platformChevron');
+  const isOpen=grid.classList.toggle('open');
+  chevron.style.transform=isOpen?'rotate(180deg)':'rotate(0deg)';
 }
 function setTab(el,tab){
   document.querySelectorAll('.chart-tab').forEach(t=>t.classList.remove('active'));
@@ -782,7 +848,7 @@ async function fetchAll(){
   document.getElementById('lastUpdated').textContent='Updated '+now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 fetchAll();
-setInterval(fetchAll,30000);
+setInterval(fetchAll,20000);
 </script>
 </body>
 </html>
