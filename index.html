@@ -3,248 +3,205 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SENTINEL // $SURCHI Contact Console</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<title>SURCHI Explorer — Live Token Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;700;900&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --void:#07110D;
-  --panel:#0C1A13;
-  --panel2:#101F17;
-  --line:#1D3826;
-  --sig:#39FF6A;
-  --sig-dim:#1F8C42;
-  --sig-glow:rgba(57,255,106,0.10);
-  --sig-glow2:rgba(57,255,106,0.05);
-  --amber:#F4B942;
-  --red:#FF3B5C;
-  --white:#EAF7EE;
-  --text:#BFE0C9;
-  --dim:#5C8069;
+  --bg:#050A14;
+  --panel:#0A1628;
+  --panel2:#0D1E35;
+  --border:#1A3A5C;
+  --cyan:#00D4FF;
+  --cyan-dim:#0099BB;
+  --cyan-glow:rgba(0,212,255,0.10);
+  --cyan-glow2:rgba(0,212,255,0.05);
+  --white:#FFFFFF;
+  --text:#D0E8F8;
+  --text-dim:#6A8FAA;
+  --light-blue:#A8D4F0;
+  --green:#00C896;
+  --red:#FF4D6A;
+  --gold:#C8A84B;
 }
 html{scroll-behavior:smooth}
-body{
-  background:var(--void);color:var(--text);
-  font-family:'IBM Plex Sans',sans-serif;font-size:14px;line-height:1.6;
-  min-height:100vh;
-  background-image:
-    linear-gradient(rgba(57,255,106,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(57,255,106,0.025) 1px, transparent 1px);
-  background-size:28px 28px;
-}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
 ::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-track{background:var(--void)}
-::-webkit-scrollbar-thumb{background:var(--line);border-radius:0}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-.mono{font-family:'JetBrains Mono',monospace}
-
-@keyframes sweepspin{to{transform:rotate(360deg)}}
-@keyframes blipfade{0%,100%{opacity:0.35}50%{opacity:1}}
-@keyframes pulsedot{0%,100%{box-shadow:0 0 0 0 rgba(57,255,106,0.5)}70%{box-shadow:0 0 0 8px rgba(57,255,106,0)}}
-@keyframes scanflicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:0.4}94%{opacity:1}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-/* ── HUD TOPBAR ─────────────────────────────────────── */
-.hud{
+/* TOPBAR */
+.topbar{
   position:fixed;top:0;left:0;right:0;z-index:100;
-  background:rgba(7,17,13,0.92);backdrop-filter:blur(6px);
-  border-bottom:1px solid var(--line);
-  height:46px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 1.25rem;
+  background:var(--panel);border-bottom:1px solid var(--cyan);
+  height:48px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;
 }
-.hud-id{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--white);letter-spacing:0.06em}
-.hud-id .led{width:7px;height:7px;background:var(--sig);border-radius:50%;animation:pulsedot 2s infinite}
-.hud-right{display:flex;align-items:center;gap:1.25rem;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--dim)}
-.hud-sync{color:var(--sig);border:1px solid var(--sig-dim);padding:2px 8px;letter-spacing:0.08em;font-size:9.5px}
-.hud-btn{background:none;border:1px solid var(--line);color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:9.5px;padding:4px 10px;cursor:pointer;letter-spacing:0.08em;transition:all .2s}
-.hud-btn:hover{border-color:var(--sig);color:var(--sig)}
+.topbar-brand{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:var(--white);letter-spacing:0.08em;display:flex;align-items:center;gap:8px}
+.topbar-brand .dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+.topbar-meta{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);display:flex;align-items:center;gap:1.5rem}
+.topbar-meta .live-badge{color:var(--green);font-size:10px;border:1px solid var(--green);padding:2px 8px;border-radius:2px;letter-spacing:0.1em}
+.refresh-btn{background:none;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:10px;padding:4px 10px;cursor:pointer;border-radius:2px;transition:all 0.2s;letter-spacing:0.08em}
+.refresh-btn:hover{border-color:var(--cyan);color:var(--cyan)}
 
-.page{padding:70px 0 3rem}
-.wrap{max-width:1120px;margin:0 auto;padding:0 1.25rem}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,200,150,0.4)}50%{opacity:0.7;box-shadow:0 0 0 6px rgba(0,200,150,0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scanline{0%{top:-10%}100%{top:110%}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-/* ── RADAR HERO ─────────────────────────────────────── */
-.radar-hero{
-  display:grid;grid-template-columns:340px 1fr;gap:2.5rem;
-  padding:1.5rem 0 2.5rem;border-bottom:1px solid var(--line);
-  align-items:center;
-}
-.radar-box{
-  position:relative;width:320px;height:320px;
-  border:1px solid var(--line);border-radius:50%;
-  background:radial-gradient(circle,var(--panel) 0%,var(--void) 78%);
-  flex-shrink:0;
-}
-.radar-ring{position:absolute;border:1px solid rgba(57,255,106,0.14);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
-.radar-crosshair{position:absolute;top:0;left:50%;width:1px;height:100%;background:rgba(57,255,106,0.1)}
-.radar-crosshair.h{width:100%;height:1px;top:50%;left:0}
-.radar-sweep{
-  position:absolute;top:0;left:0;width:100%;height:100%;
-  border-radius:50%;overflow:hidden;
-  animation:sweepspin 5s linear infinite;
-}
-.radar-sweep::before{
-  content:'';position:absolute;top:0;left:50%;width:50%;height:50%;
-  background:conic-gradient(from 0deg, rgba(57,255,106,0.35), transparent 32%);
-  transform-origin:0% 100%;
-}
-.radar-center{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  text-align:center;z-index:5;pointer-events:none;
-}
-.radar-price{font-family:'JetBrains Mono',monospace;font-size:1.7rem;font-weight:800;color:var(--white);line-height:1}
-.radar-price .ph{font-size:1rem;color:var(--dim)}
-.radar-ticker{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--sig);letter-spacing:0.14em;margin-top:4px}
-.radar-blip{
-  position:absolute;width:7px;height:7px;background:var(--sig);border-radius:50%;
-  transform:translate(-50%,-50%);animation:blipfade 2.4s ease-in-out infinite;
-  box-shadow:0 0 6px var(--sig);
-}
-.radar-blip.whale{width:10px;height:10px;background:var(--amber);box-shadow:0 0 8px var(--amber)}
+/* LAYOUT */
+.page{padding:48px 0 3rem}
+.container{max-width:1100px;margin:0 auto;padding:0 1.25rem}
 
-.hero-info{}
-.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--dim);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.6rem}
-.hero-eyebrow span{color:var(--sig)}
-.hero-title{font-family:'IBM Plex Sans',sans-serif;font-size:2rem;font-weight:700;color:var(--white);line-height:1.1;margin-bottom:0.3rem}
-.hero-sub{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);letter-spacing:0.06em;margin-bottom:1.4rem}
-.hero-change{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;padding:4px 12px;margin-bottom:1.2rem;border:1px solid transparent}
-.hero-change.up{background:rgba(57,255,106,0.09);color:var(--sig);border-color:rgba(57,255,106,0.3)}
-.hero-change.down{background:rgba(255,59,92,0.09);color:var(--red);border-color:rgba(255,59,92,0.3)}
-.hero-mint{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1rem}
-.hero-mint .addr{color:var(--text);letter-spacing:0.02em}
-.copy-btn{background:none;border:1px solid var(--line);color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:9.5px;padding:3px 10px;cursor:pointer;transition:all .2s;letter-spacing:0.08em}
-.copy-btn:hover{border-color:var(--sig);color:var(--sig)}
-.copy-btn.copied{border-color:var(--sig);color:var(--sig)}
-.hero-links{display:flex;gap:0.5rem;flex-wrap:wrap}
-.ext-link{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--dim);border:1px solid var(--line);padding:6px 13px;text-decoration:none;transition:all .2s;letter-spacing:0.05em}
-.ext-link:hover{color:var(--sig);border-color:var(--sig);background:var(--sig-glow)}
+/* HERO */
+.hero{
+  position:relative;overflow:hidden;
+  border-bottom:1px solid var(--border);
+  padding:2.5rem 0 2rem;
+}
+.hero::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+}
+/* Scanline effect */
+.hero::after{
+  content:'';position:absolute;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(0,212,255,0.15),transparent);
+  animation:scanline 4s linear infinite;pointer-events:none;
+}
+.hero-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:2rem;flex-wrap:wrap}
+.hero-left{}
+.hero-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:0.4rem}
+.hero-name{font-family:'Orbitron',sans-serif;font-size:2.2rem;font-weight:900;color:var(--white);line-height:1;margin-bottom:0.3rem}
+.hero-ticker{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--cyan);letter-spacing:0.1em;margin-bottom:1rem}
+.hero-price{font-family:'Orbitron',sans-serif;font-size:2.6rem;font-weight:900;color:var(--white);line-height:1;margin-bottom:0.4rem}
+.hero-price .loading-ph{font-size:1.2rem;color:var(--text-dim);animation:blink 1s infinite}
+.price-change{display:inline-flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:13px;font-weight:600;padding:4px 12px;border-radius:2px;margin-bottom:1rem}
+.price-change.up{background:rgba(0,200,150,0.12);color:var(--green);border:1px solid rgba(0,200,150,0.25)}
+.price-change.down{background:rgba(255,77,106,0.12);color:var(--red);border:1px solid rgba(255,77,106,0.25)}
+.hero-mint{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hero-mint .addr{color:var(--light-blue);letter-spacing:0.04em}
+.copy-btn{background:none;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 8px;cursor:pointer;border-radius:2px;transition:all 0.2s;letter-spacing:0.06em}
+.copy-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.copy-btn.copied{border-color:var(--green);color:var(--green)}
 
-/* ── SIGNAL STRIP ───────────────────────────────────── */
-.signal-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:2rem 0}
-.signal-cell{background:var(--panel);padding:1.1rem 1.3rem;position:relative}
-.signal-cell::before{content:attr(data-tag);position:absolute;top:8px;right:10px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--line);letter-spacing:0.1em}
-.sig-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:0.55rem}
-.sig-val{font-family:'JetBrains Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--white)}
-.sig-val.g{color:var(--sig)}
-.sig-val.a{color:var(--amber)}
-.sig-sub{font-size:10.5px;color:var(--dim);margin-top:4px;font-family:'JetBrains Mono',monospace}
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin:2rem 0}
+.stat-card{background:var(--panel);padding:1.1rem 1.2rem;position:relative;transition:background 0.2s}
+.stat-card:hover{background:var(--panel2)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:transparent;transition:background 0.2s}
+.stat-card:hover::before{background:var(--cyan)}
+.stat-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.5rem}
+.stat-val{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);line-height:1.2}
+.stat-val.green{color:var(--green)}
+.stat-val.cyan{color:var(--cyan)}
+.stat-val.gold{color:var(--gold)}
+.stat-sub{font-size:11px;color:var(--text-dim);margin-top:3px;font-family:'Share Tech Mono',monospace}
 
-/* ── SECTION LABELS ─────────────────────────────────── */
-.slabel{display:flex;align-items:center;gap:0.8rem;margin:2.6rem 0 1rem}
-.slabel-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--void);background:var(--sig);padding:3px 9px;font-weight:700;letter-spacing:0.1em}
-.slabel h2{font-family:'IBM Plex Sans',sans-serif;font-size:0.95rem;font-weight:600;color:var(--white);letter-spacing:0.02em}
-.slabel-rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+/* SECTION HEADERS */
+.sec-header{display:flex;align-items:center;gap:0.75rem;margin:2.5rem 0 1rem}
+.sec-header h2{font-family:'Orbitron',sans-serif;font-size:0.85rem;font-weight:700;color:var(--white);letter-spacing:0.1em;text-transform:uppercase}
+.sec-rule{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.sec-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);flex-shrink:0}
 
-.two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:1rem;margin-bottom:1rem}
+/* TWO-COL LAYOUT */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
 .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
 
-.panel{background:var(--panel);border:1px solid var(--line)}
-.panel-pad{padding:1.25rem}
-.panel-head{
-  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--sig);
-  letter-spacing:0.14em;text-transform:uppercase;
-  padding:0.9rem 1.25rem;border-bottom:1px solid var(--line);
-  display:flex;justify-content:space-between;align-items:center;
+/* PANELS */
+.data-panel{background:var(--panel);border:1px solid var(--border);padding:1.25rem}
+.data-panel-title{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:1rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border)}
+
+/* TX FEED */
+.tx-feed{display:flex;flex-direction:column;gap:0}
+.tx-row{
+  display:grid;grid-template-columns:60px 1fr 80px 90px 70px;
+  align-items:center;gap:0.5rem;
+  padding:0.55rem 0.75rem;
+  border-bottom:1px solid rgba(26,58,92,0.5);
+  font-family:'Share Tech Mono',monospace;font-size:11px;
+  transition:background 0.15s;cursor:default;
 }
-.panel-head .n{color:var(--dim);font-size:9px}
+.tx-row:hover{background:var(--cyan-glow2)}
+.tx-row:last-child{border-bottom:none}
+.tx-head{color:var(--text-dim);font-size:9px;letter-spacing:0.1em;text-transform:uppercase}
+.tx-type-buy{color:var(--green);font-weight:600}
+.tx-type-sell{color:var(--red);font-weight:600}
+.tx-addr{color:var(--light-blue);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tx-amount{color:var(--white);text-align:right}
+.tx-usd{color:var(--text-dim);text-align:right}
+.tx-time{color:var(--text-dim);text-align:right;font-size:10px}
 
-/* ── SCOPE CHART (oscilloscope style) ───────────────── */
-.scope-tabs{display:flex;border-bottom:1px solid var(--line)}
-.scope-tab{font-family:'JetBrains Mono',monospace;font-size:10px;padding:8px 16px;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;letter-spacing:0.08em}
-.scope-tab:hover{color:var(--text)}
-.scope-tab.active{color:var(--sig);border-bottom-color:var(--sig)}
-.scope-area{height:190px;background:
-  linear-gradient(rgba(57,255,106,0.04) 1px,transparent 1px) 0 0/100% 20% ,
-  var(--void);
-  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+/* HOLDERS TABLE */
+.holders-table{width:100%;border-collapse:collapse;font-size:12px}
+.holders-table th{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem 0.75rem;text-align:left;border-bottom:1px solid var(--border)}
+.holders-table td{padding:0.55rem 0.75rem;border-bottom:1px solid rgba(26,58,92,0.4);color:var(--text)}
+.holders-table tr:hover td{background:var(--cyan-glow2)}
+.holders-table .rank{color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:11px}
+.holders-table .wallet{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--light-blue)}
+.holders-table .pct{color:var(--cyan);font-family:'Share Tech Mono',monospace;font-size:11px;text-align:right}
+.holders-table .amount-cell{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--white);text-align:right}
+.pct-bar-wrap{width:80px;height:4px;background:var(--panel2);border-radius:2px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:6px}
+.pct-bar{height:100%;background:var(--cyan);border-radius:2px;transition:width 0.6s ease}
+
+/* TOKENOMICS RING */
+.tokenomics-wrap{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
+.ring-wrap{position:relative;width:140px;height:140px;flex-shrink:0}
+.ring-svg{width:140px;height:140px;transform:rotate(-90deg)}
+.ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.ring-center-val{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white)}
+.ring-center-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:0.1em}
+.ring-legend{display:flex;flex-direction:column;gap:0.6rem}
+.ring-item{display:flex;align-items:center;gap:10px}
+.ring-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ring-item-name{font-size:12px;color:var(--text)}
+.ring-item-pct{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;margin-left:auto;padding-left:1rem}
+
+/* PRICE CHART PLACEHOLDER */
+.chart-area{
+  height:180px;background:var(--panel2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
 }
+.chart-svg{width:100%;height:100%}
+.chart-tabs{display:flex;gap:0;margin-bottom:0;border-bottom:1px solid var(--border)}
+.chart-tab{font-family:'Share Tech Mono',monospace;font-size:10px;padding:6px 14px;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;letter-spacing:0.08em}
+.chart-tab:hover{color:var(--light-blue)}
+.chart-tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
 
-/* ── DATA TABLE ─────────────────────────────────────── */
-.dtable{width:100%;border-collapse:collapse}
-.dtable tr{border-bottom:1px solid var(--line)}
-.dtable tr:last-child{border-bottom:none}
-.dtable td{padding:0.62rem 0;font-size:12px}
-.dtable td:first-child{color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:0.05em;text-transform:uppercase;width:48%}
-.dtable td:last-child{color:var(--white);font-family:'JetBrains Mono',monospace;font-size:11.5px;text-align:right}
-.dtable .g{color:var(--sig)}
-.dtable .r{color:var(--red)}
-.dtable .a{color:var(--amber)}
+/* INFO TABLE */
+.info-table{width:100%;border-collapse:collapse}
+.info-table tr{border-bottom:1px solid rgba(26,58,92,0.4)}
+.info-table tr:last-child{border-bottom:none}
+.info-table td{padding:0.65rem 0;font-size:12.5px}
+.info-table td:first-child{color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.06em;text-transform:uppercase;width:45%}
+.info-table td:last-child{color:var(--white);font-family:'Share Tech Mono',monospace;font-size:11px;text-align:right}
+.info-table .val-green{color:var(--green)}
+.info-table .val-red{color:var(--red)}
+.info-table .val-cyan{color:var(--cyan)}
 
-/* ── THREAT LOG (tx feed) ───────────────────────────── */
-.tlog-row{
-  display:grid;grid-template-columns:56px 1fr 76px 84px 64px;
-  align-items:center;gap:0.5rem;padding:0.55rem 1.25rem;
-  border-bottom:1px solid rgba(29,56,38,0.5);
-  font-family:'JetBrains Mono',monospace;font-size:11px;
-  transition:background .15s;animation:rise .3s ease;
-}
-.tlog-row:hover{background:var(--sig-glow2)}
-.tlog-row:last-child{border-bottom:none}
-.tlog-head{color:var(--dim);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.25rem 0.6rem}
-.tag-in{color:var(--sig);font-weight:700;background:rgba(57,255,106,0.08);padding:1px 6px;text-align:center}
-.tag-out{color:var(--red);font-weight:700;background:rgba(255,59,92,0.08);padding:1px 6px;text-align:center}
-.tlog-addr{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tlog-amt{color:var(--white);text-align:right}
-.tlog-usd{color:var(--dim);text-align:right}
-.tlog-time{color:var(--dim);text-align:right;font-size:9.5px}
+/* LINKS */
+.explorer-links{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.75rem}
+.ext-link{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);border:1px solid var(--border);padding:5px 12px;text-decoration:none;border-radius:2px;transition:all 0.2s;letter-spacing:0.06em}
+.ext-link:hover{color:var(--cyan);border-color:var(--cyan);background:var(--cyan-glow)}
 
-/* ── CONTACT REGISTRY (holders) ─────────────────────── */
-.reg-row{
-  display:grid;grid-template-columns:36px 1fr 100px 130px;
-  align-items:center;gap:0.75rem;padding:0.6rem 1.25rem;
-  border-bottom:1px solid rgba(29,56,38,0.4);font-size:12px;
-}
-.reg-row:hover{background:var(--sig-glow2)}
-.reg-row:last-child{border-bottom:none}
-.reg-head{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.25rem 0.6rem;border-bottom:1px solid var(--line)}
-.reg-rank{color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:11px}
-.reg-wallet{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text)}
-.reg-amt{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--white);text-align:right}
-.reg-pctwrap{display:flex;align-items:center;gap:8px;justify-content:flex-end}
-.reg-pct{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--sig);width:44px;text-align:right}
-.reg-bar-track{width:70px;height:4px;background:var(--panel2);overflow:hidden}
-.reg-bar-fill{height:100%;background:var(--sig);transition:width .6s ease}
+/* LOADING */
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block}
+.loading-row{display:flex;align-items:center;justify-content:center;gap:10px;padding:2rem;color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:11px}
+.error-row{padding:1.5rem;text-align:center;color:var(--red);font-family:'Share Tech Mono',monospace;font-size:11px}
 
-/* ── ALLOCATION SECTOR SWEEP ────────────────────────── */
-.alloc-wrap{display:flex;gap:2.2rem;align-items:center;flex-wrap:wrap;padding:1.4rem}
-.sector-box{position:relative;width:160px;height:160px;flex-shrink:0}
-.sector-svg{width:160px;height:160px;transform:rotate(-90deg)}
-.sector-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.sector-val{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--white)}
-.sector-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--dim);letter-spacing:0.1em}
-.alloc-legend{display:flex;flex-direction:column;gap:0.7rem;flex:1;min-width:220px}
-.alloc-item{display:flex;align-items:center;gap:10px}
-.alloc-sq{width:10px;height:10px;flex-shrink:0;margin-top:2px;align-self:flex-start}
-.alloc-item-body{display:flex;flex-direction:column;gap:2px}
-.alloc-name{font-size:12px;color:var(--text)}
-.alloc-sub{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--dim)}
-.alloc-pct{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;margin-left:auto;padding-left:1rem;flex-shrink:0}
+/* FOOTER */
+.footer{text-align:center;padding:2rem 0;border-top:1px solid var(--border);font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:0.08em;margin-top:2rem}
+.footer span{color:var(--cyan)}
 
-/* ── ENGINE CARDS ────────────────────────────────────── */
-.engine-card{padding:1.4rem;text-align:center}
-.engine-lbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--dim);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.8rem;padding-bottom:0.6rem;border-bottom:1px solid var(--line)}
-.engine-val{font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:800;margin:0.4rem 0}
-.engine-sub{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--dim)}
-
-/* ── LOADING / ERROR ─────────────────────────────────── */
-.spinner{width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--sig);border-radius:50%;animation:spin .8s linear infinite;display:inline-block}
-.loading-row{display:flex;align-items:center;justify-content:center;gap:10px;padding:2rem;color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:11px}
-.error-row{padding:1.5rem;text-align:center;color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px}
-
-/* ── FOOTER ──────────────────────────────────────────── */
-.footer{text-align:center;padding:2.2rem 0;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:0.06em;margin-top:2rem;line-height:2}
-.footer span{color:var(--sig)}
-
-@media(max-width:860px){
-  .radar-hero{grid-template-columns:1fr;justify-items:center;text-align:center}
-  .radar-box{width:260px;height:260px}
-  .signal-strip{grid-template-columns:repeat(2,1fr)}
+/* RESPONSIVE */
+@media(max-width:768px){
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
   .two-col,.three-col{grid-template-columns:1fr}
-  .tlog-row{grid-template-columns:44px 1fr 60px}
-  .tlog-usd,.tlog-time{display:none}
-  .reg-row{grid-template-columns:30px 1fr 90px}
-  .reg-amt{display:none}
-  .hud-right .sync-time{display:none}
+  .hero-price{font-size:2rem}
+  .tx-row{grid-template-columns:50px 1fr 70px;gap:0.3rem}
+  .tx-usd,.tx-time{display:none}
+  .topbar-meta .last-updated{display:none}
 }
 @media(prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
@@ -252,233 +209,229 @@ body{
 </style>
 </head>
 <body>
-
-<div class="hud">
-  <div class="hud-id"><div class="led"></div>SENTINEL://SURCHI-CONSOLE</div>
-  <div class="hud-right">
-    <span class="hud-sync mono">TRACKING</span>
-    <span class="sync-time" id="lastUpdated">SYNC —</span>
-    <button class="hud-btn" onclick="fetchAll()">↻ RE-SCAN</button>
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="dot"></div>
+    SURCHI EXPLORER
+  </div>
+  <div class="topbar-meta">
+    <span class="live-badge">● LIVE</span>
+    <span class="last-updated" id="lastUpdated">Loading...</span>
+    <button class="refresh-btn" onclick="fetchAll()">↺ REFRESH</button>
   </div>
 </div>
 
 <div class="page">
-<div class="wrap">
+<div class="container">
 
-  <!-- RADAR HERO -->
-  <div class="radar-hero">
-    <div class="radar-box" id="radarBox">
-      <div class="radar-ring" style="width:100%;height:100%"></div>
-      <div class="radar-ring" style="width:72%;height:72%"></div>
-      <div class="radar-ring" style="width:44%;height:44%"></div>
-      <div class="radar-crosshair"></div>
-      <div class="radar-crosshair h"></div>
-      <div class="radar-sweep"></div>
-      <div class="radar-center">
-        <div class="radar-price mono" id="heroPrice"><span class="ph">SCANNING···</span></div>
-        <div class="radar-ticker">$SURCHI</div>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-eyebrow">■ Solana Token Intelligence</div>
+        <div class="hero-name">SURCHI</div>
+        <div class="hero-ticker">$SURCHI · SURCHI COIN · SPL-9</div>
+        <div class="hero-price" id="heroPrice"><span class="loading-ph">···</span></div>
+        <div id="priceChange" class="price-change up" style="display:none"></div>
+        <div class="hero-mint">
+          MINT:&nbsp;<span class="addr" id="mintDisplay">BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ</span>
+          <button class="copy-btn" id="copyBtn" onclick="copyMint()">COPY</button>
+        </div>
       </div>
-      <!-- blips injected by JS -->
-      <div id="blipLayer"></div>
-    </div>
-
-    <div class="hero-info">
-      <div class="hero-eyebrow"><span>◉</span>&nbsp; SOLANA SPL-9 · CONTACT DESIGNATION</div>
-      <div class="hero-title">SURCHI COIN</div>
-      <div class="hero-sub mono">NEURAL SENTINEL PROTOCOL · $SURCHI</div>
-      <div id="priceChange" class="hero-change up" style="display:none"></div>
-      <div class="hero-mint">
-        MINT:&nbsp;<span class="addr" id="mintDisplay">BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ</span>
-        <button class="copy-btn" id="copyBtn" onclick="copyMint()">COPY</button>
-      </div>
-      <div class="hero-links">
-        <a class="ext-link" href="https://dexscreener.com/solana/BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ" target="_blank">DexScreener ↗</a>
-        <a class="ext-link" href="https://solscan.io/token/BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ" target="_blank">Solscan ↗</a>
-        <a class="ext-link" href="https://birdeye.so/token/BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ" target="_blank">Birdeye ↗</a>
-        <a class="ext-link" href="https://jup.ag/swap/SOL-BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ" target="_blank">Acquire via Jupiter ↗</a>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;align-items:flex-end">
+        <div class="explorer-links">
+          <a class="ext-link" href="https://dexscreener.com/solana/BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ" target="_blank">DexScreener ↗</a>
+          <a class="ext-link" href="https://solscan.io/token/BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ" target="_blank">Solscan ↗</a>
+          <a class="ext-link" href="https://birdeye.so/token/BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ" target="_blank">Birdeye ↗</a>
+          <a class="ext-link" href="https://jup.ag/swap/SOL-BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ" target="_blank">Buy on Jupiter ↗</a>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- SIGNAL STRIP -->
-  <div class="signal-strip">
-    <div class="signal-cell" data-tag="01">
-      <div class="sig-lbl">Market Cap</div>
-      <div class="sig-val g mono" id="statMcap">···</div>
-      <div class="sig-sub" id="statMcapFdv"></div>
+  <!-- STAT GRID -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-lbl">Market Cap</div>
+      <div class="stat-val cyan" id="statMcap">···</div>
+      <div class="stat-sub" id="statMcapFdv"></div>
     </div>
-    <div class="signal-cell" data-tag="02">
-      <div class="sig-lbl">24H Volume</div>
-      <div class="sig-val mono" id="statVol">···</div>
-      <div class="sig-sub">Signal throughput</div>
+    <div class="stat-card">
+      <div class="stat-lbl">24H Volume</div>
+      <div class="stat-val" id="statVol">···</div>
+      <div class="stat-sub" id="statVolChange"></div>
     </div>
-    <div class="signal-cell" data-tag="03">
-      <div class="sig-lbl">Liquidity</div>
-      <div class="sig-val a mono" id="statLiq">···</div>
-      <div class="sig-sub">Raydium / Jupiter</div>
+    <div class="stat-card">
+      <div class="stat-lbl">Liquidity</div>
+      <div class="stat-val gold" id="statLiq">···</div>
+      <div class="stat-sub">Raydium / Jupiter</div>
     </div>
-    <div class="signal-cell" data-tag="04">
-      <div class="sig-lbl">Total Supply</div>
-      <div class="sig-val mono">19,897,905</div>
-      <div class="sig-sub">Fixed · Non-Inflationary</div>
+    <div class="stat-card">
+      <div class="stat-lbl">Total Supply</div>
+      <div class="stat-val" id="statSupply">19,897,905</div>
+      <div class="stat-sub">Fixed · Non-Inflationary</div>
     </div>
   </div>
 
-  <!-- SCOPE + STATS -->
+  <!-- CHART + PRICE STATS -->
   <div class="two-col">
-    <div class="panel">
-      <div class="panel-head">Oscilloscope <span class="n">PRICE / TIME</span></div>
-      <div class="scope-tabs">
-        <div class="scope-tab active" onclick="setTab(this,'5m')">5M</div>
-        <div class="scope-tab" onclick="setTab(this,'1h')">1H</div>
-        <div class="scope-tab" onclick="setTab(this,'6h')">6H</div>
-        <div class="scope-tab" onclick="setTab(this,'24h')">24H</div>
+    <div class="data-panel" style="grid-column:1/-1">
+      <div class="data-panel-title">Price Chart</div>
+      <div class="chart-tabs">
+        <div class="chart-tab active" onclick="setTab(this,'5m')">5M</div>
+        <div class="chart-tab" onclick="setTab(this,'1h')">1H</div>
+        <div class="chart-tab" onclick="setTab(this,'6h')">6H</div>
+        <div class="chart-tab" onclick="setTab(this,'24h')">24H</div>
       </div>
-      <div class="scope-area" id="chartArea">
-        <div class="loading-row"><div class="spinner"></div> ACQUIRING SIGNAL...</div>
-      </div>
-    </div>
-    <div class="panel">
-      <div class="panel-head">Contact Dossier</div>
-      <div class="panel-pad">
-        <table class="dtable">
-          <tr><td>Token</td><td>SURCHI COIN</td></tr>
-          <tr><td>Ticker</td><td class="g">$SURCHI</td></tr>
-          <tr><td>Network</td><td>Solana</td></tr>
-          <tr><td>Standard</td><td>SPL Token</td></tr>
-          <tr><td>Decimals</td><td>9</td></tr>
-          <tr><td>Supply</td><td>19,897,905</td></tr>
-          <tr><td>Team Alloc.</td><td class="g">0% — None</td></tr>
-          <tr><td>Mint Auth.</td><td class="g">Revoked</td></tr>
-          <tr><td>DEX</td><td>Raydium · Jupiter</td></tr>
-        </table>
+      <div class="chart-area" id="chartArea">
+        <div class="loading-row"><div class="spinner"></div> Loading chart data...</div>
       </div>
     </div>
   </div>
 
-  <!-- PRICE STATS full width -->
-  <div class="panel" style="margin-bottom:1rem">
-    <div class="panel-head">Telemetry Readout</div>
-    <div class="panel-pad" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem">
-      <table class="dtable">
+  <!-- PRICE STATS + TOKEN INFO -->
+  <div class="two-col">
+    <div class="data-panel">
+      <div class="data-panel-title">Price Stats</div>
+      <table class="info-table">
         <tr><td>Price USD</td><td id="infoPriceUsd">—</td></tr>
         <tr><td>Price SOL</td><td id="infoPriceSol">—</td></tr>
+        <tr><td>24H High</td><td class="val-green" id="info24hHigh">—</td></tr>
+        <tr><td>24H Low</td><td class="val-red" id="info24hLow">—</td></tr>
+        <tr><td>24H Change</td><td id="info24hChange">—</td></tr>
+        <tr><td>5M Change</td><td id="info5mChange">—</td></tr>
+        <tr><td>1H Change</td><td id="info1hChange">—</td></tr>
+        <tr><td>6H Change</td><td id="info6hChange">—</td></tr>
+        <tr><td>Buys 24H</td><td class="val-green" id="infoBuys">—</td></tr>
+        <tr><td>Sells 24H</td><td class="val-red" id="infoBuys2">—</td></tr>
       </table>
-      <table class="dtable">
-        <tr><td>24H High</td><td class="g" id="info24hHigh">—</td></tr>
-        <tr><td>24H Low</td><td class="r" id="info24hLow">—</td></tr>
-      </table>
-      <table class="dtable">
-        <tr><td>24H Δ</td><td id="info24hChange">—</td></tr>
-        <tr><td>6H Δ</td><td id="info6hChange">—</td></tr>
-      </table>
-      <table class="dtable">
-        <tr><td>Inbound (24H)</td><td class="g" id="infoBuys">—</td></tr>
-        <tr><td>Outbound (24H)</td><td class="r" id="infoBuys2">—</td></tr>
+    </div>
+    <div class="data-panel">
+      <div class="data-panel-title">Token Info</div>
+      <table class="info-table">
+        <tr><td>Token Name</td><td>SURCHI COIN</td></tr>
+        <tr><td>Ticker</td><td class="val-cyan">$SURCHI</td></tr>
+        <tr><td>Network</td><td>Solana</td></tr>
+        <tr><td>Standard</td><td>SPL Token</td></tr>
+        <tr><td>Decimals</td><td>9</td></tr>
+        <tr><td>Total Supply</td><td>19,897,905</td></tr>
+        <tr><td>Circulating</td><td>19,897,905</td></tr>
+        <tr><td>Team Alloc.</td><td class="val-green">0% — None</td></tr>
+        <tr><td>Mint Auth.</td><td class="val-green">Revoked</td></tr>
+        <tr><td>DEX</td><td>Raydium · Jupiter</td></tr>
       </table>
     </div>
   </div>
 
-  <!-- ALLOCATION SECTOR -->
-  <div class="slabel"><div class="slabel-tag">SEC</div><h2>Allocation Sector Map</h2><div class="slabel-rule"></div></div>
-  <div class="panel" style="margin-bottom:1rem">
-    <div class="alloc-wrap">
-      <div class="sector-box">
-        <svg class="sector-svg" viewBox="0 0 160 160">
-          <circle cx="80" cy="80" r="62" fill="none" stroke="#101F17" stroke-width="20"/>
-          <circle cx="80" cy="80" r="62" fill="none" stroke="#39FF6A" stroke-width="20"
-            stroke-dasharray="233.6 389.6" stroke-dashoffset="0"/>
-          <circle cx="80" cy="80" r="62" fill="none" stroke="#F4B942" stroke-width="20"
-            stroke-dasharray="116.9 389.6" stroke-dashoffset="-233.6"/>
-          <circle cx="80" cy="80" r="62" fill="none" stroke="#5C8069" stroke-width="20"
-            stroke-dasharray="38.9 389.6" stroke-dashoffset="-350.5"/>
+  <!-- TOKENOMICS -->
+  <div class="sec-header"><div class="sec-dot"></div><h2>Tokenomics</h2><div class="sec-rule"></div></div>
+  <div class="data-panel" style="margin-bottom:1rem">
+    <div class="data-panel-title">Supply Distribution</div>
+    <div class="tokenomics-wrap">
+      <div class="ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 140 140">
+          <!-- Presale 60% -->
+          <circle cx="70" cy="70" r="54" fill="none" stroke="#0D1E35" stroke-width="18"/>
+          <circle cx="70" cy="70" r="54" fill="none" stroke="#00D4FF" stroke-width="18"
+            stroke-dasharray="203.6 339.3" stroke-dashoffset="0" stroke-linecap="butt"/>
+          <!-- LP 30% -->
+          <circle cx="70" cy="70" r="54" fill="none" stroke="#C8A84B" stroke-width="18"
+            stroke-dasharray="101.8 339.3" stroke-dashoffset="-203.6" stroke-linecap="butt"/>
+          <!-- DAO 10% -->
+          <circle cx="70" cy="70" r="54" fill="none" stroke="#00C896" stroke-width="18"
+            stroke-dasharray="33.9 339.3" stroke-dashoffset="-305.4" stroke-linecap="butt"/>
         </svg>
-        <div class="sector-center">
-          <div class="sector-val mono">19.9M</div>
-          <div class="sector-lbl">TOTAL UNITS</div>
+        <div class="ring-center">
+          <div class="ring-center-val">19.9M</div>
+          <div class="ring-center-lbl">SUPPLY</div>
         </div>
       </div>
-      <div class="alloc-legend">
-        <div class="alloc-item">
-          <div class="alloc-sq" style="background:#39FF6A"></div>
-          <div class="alloc-item-body">
-            <div class="alloc-name">Public Presale</div>
-            <div class="alloc-sub">11,938,743 units · released at TGE</div>
+      <div class="ring-legend">
+        <div class="ring-item">
+          <div class="ring-dot" style="background:#00D4FF"></div>
+          <div>
+            <div class="ring-item-name">Public Presale</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)">11,938,743 tokens</div>
           </div>
-          <div class="alloc-pct" style="color:#39FF6A">60%</div>
+          <div class="ring-item-pct" style="color:#00D4FF">60%</div>
         </div>
-        <div class="alloc-item">
-          <div class="alloc-sq" style="background:#F4B942"></div>
-          <div class="alloc-item-body">
-            <div class="alloc-name">Liquidity Pool</div>
-            <div class="alloc-sub">5,969,372 units · locked 24 months</div>
+        <div class="ring-item">
+          <div class="ring-dot" style="background:#C8A84B"></div>
+          <div>
+            <div class="ring-item-name">Liquidity Pool</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)">5,969,372 tokens · Locked 24M</div>
           </div>
-          <div class="alloc-pct" style="color:#F4B942">30%</div>
+          <div class="ring-item-pct" style="color:#C8A84B">30%</div>
         </div>
-        <div class="alloc-item">
-          <div class="alloc-sq" style="background:#5C8069"></div>
-          <div class="alloc-item-body">
-            <div class="alloc-name">Community DAO Reserve</div>
-            <div class="alloc-sub">1,989,790 units · treasury / staking</div>
+        <div class="ring-item">
+          <div class="ring-dot" style="background:#00C896"></div>
+          <div>
+            <div class="ring-item-name">Community DAO Reserve</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)">1,989,790 tokens · Treasury</div>
           </div>
-          <div class="alloc-pct" style="color:#5C8069">10%</div>
+          <div class="ring-item-pct" style="color:#00C896">10%</div>
         </div>
-        <div class="alloc-item" style="border-top:1px solid var(--line);padding-top:0.6rem;margin-top:0.2rem">
-          <div class="alloc-sq" style="border:1px solid var(--line);background:transparent"></div>
-          <div class="alloc-name" style="color:var(--dim)">Team / Advisors / VC</div>
-          <div class="alloc-pct" style="color:var(--dim)">0%</div>
+        <div class="ring-item" style="margin-top:0.3rem;padding-top:0.6rem;border-top:1px solid var(--border)">
+          <div class="ring-dot" style="background:transparent;border:1px solid var(--border)"></div>
+          <div style="color:var(--text-dim);font-size:12px">Team / Advisors / VC</div>
+          <div class="ring-item-pct" style="color:var(--text-dim)">0%</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- THREAT LOG -->
-  <div class="slabel"><div class="slabel-tag">LOG</div><h2>Intercepted Signal Feed</h2><div class="slabel-rule"></div></div>
-  <div class="panel" style="margin-bottom:1rem">
-    <div class="panel-head">Recent Swaps <span class="n">RAYDIUM / JUPITER</span></div>
-    <div class="tlog-head" style="display:grid;grid-template-columns:56px 1fr 76px 84px 64px">
-      <span>Dir</span><span>Contact</span><span style="text-align:right">Units</span><span style="text-align:right">USD</span><span style="text-align:right">Age</span>
+  <!-- LIVE TRANSACTIONS -->
+  <div class="sec-header"><div class="sec-dot"></div><h2>Live Transactions</h2><div class="sec-rule"></div></div>
+  <div class="data-panel" style="margin-bottom:1rem;padding:0">
+    <div style="padding:1rem 1.25rem 0.75rem;border-bottom:1px solid var(--border)">
+      <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan);letter-spacing:0.14em;text-transform:uppercase">Recent Swaps — Raydium / Jupiter</span>
     </div>
-    <div id="txFeed">
-      <div class="loading-row"><div class="spinner"></div> INTERCEPTING TRAFFIC...</div>
+    <div class="tx-feed">
+      <div class="tx-row tx-head">
+        <span>Type</span>
+        <span>Wallet</span>
+        <span style="text-align:right">SURCHI</span>
+        <span style="text-align:right">USD</span>
+        <span style="text-align:right">Time</span>
+      </div>
+      <div id="txFeed">
+        <div class="loading-row"><div class="spinner"></div> Fetching transactions...</div>
+      </div>
     </div>
   </div>
 
-  <!-- CONTACT REGISTRY -->
-  <div class="slabel"><div class="slabel-tag">REG</div><h2>Contact Registry — Top Holders</h2><div class="slabel-rule"></div></div>
-  <div class="panel" style="margin-bottom:1rem">
-    <div class="reg-head" style="display:grid;grid-template-columns:36px 1fr 100px 130px">
-      <span>#</span><span>Wallet</span><span style="text-align:right">Balance</span><span style="text-align:right">Supply Share</span>
-    </div>
+  <!-- TOP HOLDERS -->
+  <div class="sec-header"><div class="sec-dot"></div><h2>Top Holders</h2><div class="sec-rule"></div></div>
+  <div class="data-panel" style="padding:0;margin-bottom:1rem">
     <div id="holdersWrap">
-      <div class="loading-row"><div class="spinner"></div> RESOLVING CONTACTS...</div>
+      <div class="loading-row"><div class="spinner"></div> Loading holder data...</div>
     </div>
   </div>
 
   <!-- DEFLATIONARY ENGINE -->
-  <div class="slabel"><div class="slabel-tag">ENG</div><h2>Deflationary Engine</h2><div class="slabel-rule"></div></div>
+  <div class="sec-header"><div class="sec-dot"></div><h2>Deflationary Engine</h2><div class="sec-rule"></div></div>
   <div class="three-col">
-    <div class="panel engine-card">
-      <div class="engine-lbl">Buyback Rate</div>
-      <div class="engine-val g mono">25%</div>
-      <div class="engine-sub">of all protocol revenue</div>
+    <div class="data-panel" style="text-align:center">
+      <div class="data-panel-title">Buyback Rate</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;color:var(--cyan);margin:0.5rem 0">25%</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)">of all protocol revenue</div>
     </div>
-    <div class="panel engine-card">
-      <div class="engine-lbl">Burn Status</div>
-      <div class="engine-val g mono">ACTIVE</div>
-      <div class="engine-sub">on-chain verifiable</div>
+    <div class="data-panel" style="text-align:center">
+      <div class="data-panel-title">Burn Status</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;color:var(--green);margin:0.5rem 0">ACTIVE</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)">On-chain verifiable burns</div>
     </div>
-    <div class="panel engine-card">
-      <div class="engine-lbl">LP Lock</div>
-      <div class="engine-val a mono">24M</div>
-      <div class="engine-sub">multi-sig · Squads</div>
+    <div class="data-panel" style="text-align:center">
+      <div class="data-panel-title">LP Lock</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:900;color:var(--gold);margin:0.5rem 0">24M</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)">Multi-sig · Squads</div>
     </div>
   </div>
 
   <div class="footer">
-    <div>◉ <span>SENTINEL CONSOLE</span> · signal via DexScreener API · Solana RPC · re-scan interval 30s</div>
-    <div>MINT&nbsp;&nbsp;<span>BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ</span></div>
-    <div>surchi.xyz · @surchicoin · Decentralized. Secure. Autonomous.</div>
+    <div>■ <span>SURCHI EXPLORER</span> · Powered by DexScreener API · Solana RPC · Data refreshes every 30s</div>
+    <div style="margin-top:0.4rem">Mint: <span>BKENaAJM6hFVbL3uBqfQq7tCk3m8Jq4peat5qEnixLmZ</span></div>
+    <div style="margin-top:0.4rem">surchi.xyz · @surchicoin · Decentralized. Secure. Autonomous.</div>
   </div>
 
 </div>
@@ -492,225 +445,258 @@ const SOLANA_RPC = 'https://api.mainnet-beta.solana.com';
 let pairData = null;
 let activeTab = '5m';
 
-function fmt(n){
+// ── Utilities ──────────────────────────────────────────────
+function fmt(n, decimals=2) {
   if(n===null||n===undefined||isNaN(n)) return '—';
   if(n>=1e9) return '$'+(n/1e9).toFixed(2)+'B';
   if(n>=1e6) return '$'+(n/1e6).toFixed(2)+'M';
   if(n>=1e3) return '$'+(n/1e3).toFixed(2)+'K';
-  return '$'+n.toFixed(2);
+  return '$'+n.toFixed(decimals);
 }
-function fmtNum(n){
+function fmtNum(n) {
   if(n===null||n===undefined||isNaN(n)) return '—';
   if(n>=1e9) return (n/1e9).toFixed(2)+'B';
   if(n>=1e6) return (n/1e6).toFixed(2)+'M';
   if(n>=1e3) return (n/1e3).toFixed(2)+'K';
   return n.toLocaleString();
 }
-function fmtPrice(p){
+function fmtPrice(p) {
   if(!p||isNaN(p)) return '—';
   if(p<0.000001) return '$'+p.toExponential(4);
   if(p<0.01) return '$'+p.toFixed(8);
   if(p<1) return '$'+p.toFixed(6);
   return '$'+p.toFixed(4);
 }
-function fmtChange(pct){
+function fmtChange(pct) {
   if(pct===null||pct===undefined||isNaN(pct)) return {txt:'—',cls:''};
-  const pos=pct>=0;
-  return {txt:(pos?'+':'')+pct.toFixed(2)+'%', cls:pos?'g':'r'};
+  const pos = pct>=0;
+  return {txt:(pos?'+':'')+pct.toFixed(2)+'%', cls:pos?'val-green':'val-red'};
 }
-function shortAddr(a){ return a?a.slice(0,4)+'...'+a.slice(-4):'—'; }
-function timeAgo(ms){
+function shortAddr(addr) {
+  if(!addr) return '—';
+  return addr.slice(0,4)+'...'+addr.slice(-4);
+}
+function timeAgo(ms) {
   const s=Math.floor((Date.now()-ms)/1000);
-  if(s<60) return s+'s';
-  if(s<3600) return Math.floor(s/60)+'m';
-  return Math.floor(s/3600)+'h';
+  if(s<60) return s+'s ago';
+  if(s<3600) return Math.floor(s/60)+'m ago';
+  return Math.floor(s/3600)+'h ago';
 }
 
-function copyMint(){
+// ── Copy mint ─────────────────────────────────────────────
+function copyMint() {
   navigator.clipboard.writeText(MINT).then(()=>{
-    const b=document.getElementById('copyBtn');
-    b.textContent='COPIED';b.classList.add('copied');
-    setTimeout(()=>{b.textContent='COPY';b.classList.remove('copied')},2000);
+    const btn=document.getElementById('copyBtn');
+    btn.textContent='COPIED';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='COPY';btn.classList.remove('copied')},2000);
   });
 }
 
-function setTab(el,tab){
-  document.querySelectorAll('.scope-tab').forEach(t=>t.classList.remove('active'));
+// ── Chart tab ────────────────────────────────────────────
+function setTab(el, tab) {
+  document.querySelectorAll('.chart-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  activeTab=tab;
+  activeTab = tab;
   if(pairData) renderChart(pairData);
 }
 
-async function fetchDexScreener(){
-  try{
-    const res=await fetch(DEXSCREENER_API);
-    const data=await res.json();
-    if(!data.pairs||data.pairs.length===0) return null;
-    const pairs=data.pairs.filter(p=>p.chainId==='solana');
-    const list=pairs.length?pairs:data.pairs;
-    list.sort((a,b)=>(b.liquidity?.usd||0)-(a.liquidity?.usd||0));
-    return list[0];
-  }catch(e){ console.error(e); return null; }
+// ── DexScreener fetch ────────────────────────────────────
+async function fetchDexScreener() {
+  try {
+    const res = await fetch(DEXSCREENER_API);
+    const data = await res.json();
+    if(!data.pairs || data.pairs.length===0) return null;
+    // get best pair by liquidity
+    const pairs = data.pairs.filter(p=>p.chainId==='solana');
+    if(!pairs.length) return data.pairs[0];
+    pairs.sort((a,b)=>(b.liquidity?.usd||0)-(a.liquidity?.usd||0));
+    return pairs[0];
+  } catch(e) {
+    console.error('DexScreener error',e);
+    return null;
+  }
 }
 
-function renderStats(pair){
-  if(!pair){
-    document.getElementById('heroPrice').innerHTML='<span style="color:var(--dim);font-size:0.9rem">NO SIGNAL</span>';
+// ── Render price/stats ───────────────────────────────────
+function renderStats(pair) {
+  if(!pair) {
+    document.getElementById('heroPrice').innerHTML='<span style="color:var(--text-dim);font-size:1rem">No price data yet</span>';
     return;
   }
-  const price=parseFloat(pair.priceUsd)||0;
-  const priceSol=parseFloat(pair.priceNative)||0;
-  const mcap=pair.marketCap||pair.fdv||0;
-  const fdv=pair.fdv||0;
-  const vol24=pair.volume?.h24||0;
-  const liq=pair.liquidity?.usd||0;
-  const ch24=pair.priceChange?.h24;
-  const ch6h=pair.priceChange?.h6;
-  const buys=pair.txns?.h24?.buys||0;
-  const sells=pair.txns?.h24?.sells||0;
 
-  document.getElementById('heroPrice').innerHTML=fmtPrice(price);
-  const chData=fmtChange(ch24);
-  if(ch24!==null&&ch24!==undefined){
-    const el=document.getElementById('priceChange');
-    el.textContent=chData.txt+' · 24H';
-    el.className='hero-change '+(ch24>=0?'up':'down');
+  const price = parseFloat(pair.priceUsd)||0;
+  const priceSol = parseFloat(pair.priceNative)||0;
+  const mcap = pair.marketCap||pair.fdv||0;
+  const fdv = pair.fdv||0;
+  const vol24 = pair.volume?.h24||0;
+  const liq = pair.liquidity?.usd||0;
+  const ch24 = pair.priceChange?.h24;
+  const ch5m = pair.priceChange?.m5;
+  const ch1h = pair.priceChange?.h1;
+  const ch6h = pair.priceChange?.h6;
+  const buys = pair.txns?.h24?.buys||0;
+  const sells = pair.txns?.h24?.sells||0;
+
+  // Hero
+  document.getElementById('heroPrice').innerHTML = fmtPrice(price);
+  const chData = fmtChange(ch24);
+  if(ch24!==null&&ch24!==undefined) {
+    const el = document.getElementById('priceChange');
+    el.textContent = chData.txt+' (24H)';
+    el.className = 'price-change '+(ch24>=0?'up':'down');
     el.style.display='inline-flex';
   }
-  document.getElementById('statMcap').textContent=fmt(mcap);
-  document.getElementById('statMcapFdv').textContent='FDV: '+fmt(fdv);
-  document.getElementById('statVol').textContent=fmt(vol24);
-  document.getElementById('statLiq').textContent=fmt(liq);
 
-  document.getElementById('infoPriceUsd').textContent=fmtPrice(price);
-  document.getElementById('infoPriceSol').textContent=priceSol?priceSol.toFixed(10)+' SOL':'—';
+  // Stats
+  document.getElementById('statMcap').textContent = fmt(mcap);
+  document.getElementById('statMcapFdv').textContent = 'FDV: '+fmt(fdv);
+  document.getElementById('statVol').textContent = fmt(vol24);
+  document.getElementById('statLiq').textContent = fmt(liq);
 
-  const hi=ch24?price*(1+Math.abs(ch24)/100*1.2):null;
-  const lo=ch24?price*(1-Math.abs(ch24)/100*0.8):null;
-  document.getElementById('info24hHigh').textContent=hi?fmtPrice(hi):'—';
-  document.getElementById('info24hLow').textContent=lo?fmtPrice(lo):'—';
+  // Price stats table
+  document.getElementById('infoPriceUsd').textContent = fmtPrice(price);
+  document.getElementById('infoPriceSol').textContent = priceSol ? priceSol.toFixed(10)+' SOL' : '—';
+
+  const hi = pair.priceChange?.h24 ? price*(1+Math.abs(ch24)/100*1.2) : null;
+  const lo = pair.priceChange?.h24 ? price*(1-Math.abs(ch24)/100*0.8) : null;
+  document.getElementById('info24hHigh').textContent = hi ? fmtPrice(hi) : '—';
+  document.getElementById('info24hLow').textContent = lo ? fmtPrice(lo) : '—';
 
   const set=(id,val)=>{
     const {txt,cls}=fmtChange(val);
     const el=document.getElementById(id);
-    el.textContent=txt; el.className=cls;
+    el.textContent=txt;
+    el.className=cls;
   };
   set('info24hChange',ch24);
+  set('info5mChange',ch5m);
+  set('info1hChange',ch1h);
   set('info6hChange',ch6h);
-  document.getElementById('infoBuys').textContent=buys?buys+' hits':'—';
-  document.getElementById('infoBuys2').textContent=sells?sells+' hits':'—';
+  document.getElementById('infoBuys').textContent = buys ? buys+' txns' : '—';
+  document.getElementById('infoBuys2').textContent = sells ? sells+' txns' : '—';
 }
 
-function renderChart(pair){
-  const area=document.getElementById('chartArea');
-  if(!pair){ area.innerHTML='<div style="color:var(--dim);font-family:JetBrains Mono,monospace;font-size:11px">NO SIGNAL DATA</div>'; return; }
-  const price=parseFloat(pair.priceUsd)||0;
-  const changes={'5m':pair.priceChange?.m5||0,'1h':pair.priceChange?.h1||0,'6h':pair.priceChange?.h6||0,'24h':pair.priceChange?.h24||0};
-  const ch=changes[activeTab]||0;
-  const points=44;
-  const start=price/(1+ch/100);
-  const prices=[];
+// ── Render chart (SVG line) ───────────────────────────────
+function renderChart(pair) {
+  const area = document.getElementById('chartArea');
+  if(!pair) {
+    area.innerHTML='<div style="color:var(--text-dim);font-family:Share Tech Mono,monospace;font-size:11px">No chart data available</div>';
+    return;
+  }
+
+  const price = parseFloat(pair.priceUsd)||0;
+  const changes = {
+    '5m': pair.priceChange?.m5||0,
+    '1h': pair.priceChange?.h1||0,
+    '6h': pair.priceChange?.h6||0,
+    '24h': pair.priceChange?.h24||0,
+  };
+  const ch = changes[activeTab]||0;
+  const points = 40;
+  const start = price / (1 + ch/100);
+  const prices = [];
   for(let i=0;i<points;i++){
     const t=i/(points-1);
     const noise=(Math.random()-0.5)*Math.abs(ch)*0.15;
-    prices.push(start+(price-start)*t*(0.85+Math.random()*0.3)+noise*start);
+    prices.push(start + (price-start)*t*(0.85+Math.random()*0.3) + noise*start);
   }
   prices[prices.length-1]=price;
+
   const mn=Math.min(...prices), mx=Math.max(...prices);
   const range=mx-mn||price*0.001;
-  const W=600,H=170,pad=10;
-  const pts=prices.map((p,i)=>{
+  const W=600,H=160,pad=10;
+  const pts = prices.map((p,i)=>{
     const x=pad+(W-pad*2)*i/(points-1);
     const y=H-pad-(H-pad*2)*(p-mn)/range;
     return `${x},${y}`;
   }).join(' ');
-  const color=ch>=0?'#39FF6A':'#FF3B5C';
-  const fillId='fill'+Date.now();
+
+  const color = ch>=0?'#00C896':'#FF4D6A';
+  const fillId='chartFill'+Date.now();
+
   area.innerHTML=`
     <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block">
-      <defs><linearGradient id="${fillId}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="${color}" stop-opacity="0.22"/>
-        <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
-      </linearGradient></defs>
+      <defs>
+        <linearGradient id="${fillId}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="${color}" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
       <polygon points="${pts} ${W-pad},${H} ${pad},${H}" fill="url(#${fillId})"/>
       <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"/>
-      <circle cx="${W-pad}" cy="${H-pad-(H-pad*2)*(price-mn)/range}" r="3" fill="${color}"/>
-      <text x="${pad+4}" y="16" font-family="JetBrains Mono,monospace" font-size="9" fill="#5C8069">${activeTab.toUpperCase()} · ${ch>=0?'+':''}${ch.toFixed(2)}%</text>
-      <text x="${W-pad-4}" y="16" font-family="JetBrains Mono,monospace" font-size="9" fill="#5C8069" text-anchor="end">${fmtPrice(price)}</text>
-    </svg>`;
+      <circle cx="${pad+(W-pad*2)*(points-1)/(points-1)}" cy="${H-pad-(H-pad*2)*(price-mn)/range}" r="3" fill="${color}"/>
+      <text x="${pad+4}" y="${pad+12}" font-family="Share Tech Mono,monospace" font-size="9" fill="#6A8FAA">${activeTab.toUpperCase()} · ${ch>=0?'+':''}${ch.toFixed(2)}%</text>
+      <text x="${W-pad-4}" y="${pad+12}" font-family="Share Tech Mono,monospace" font-size="9" fill="#6A8FAA" text-anchor="end">${fmtPrice(price)}</text>
+    </svg>
+  `;
 }
 
-async function fetchHolders(){
-  const wrap=document.getElementById('holdersWrap');
-  try{
-    const res=await fetch(SOLANA_RPC,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({jsonrpc:'2.0',id:1,method:'getTokenLargestAccounts',params:[MINT,{commitment:'confirmed'}]})
+// ── Top holders via Solana RPC ───────────────────────────
+async function fetchHolders() {
+  const wrap = document.getElementById('holdersWrap');
+  try {
+    const res = await fetch(SOLANA_RPC, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        jsonrpc:'2.0',id:1,method:'getTokenLargestAccounts',
+        params:[MINT,{commitment:'confirmed'}]
+      })
     });
-    const data=await res.json();
-    const accounts=data?.result?.value;
-    if(!accounts||!accounts.length){ wrap.innerHTML='<div class="error-row">CONTACT DATA UNAVAILABLE FROM RPC</div>'; plotBlips([]); return; }
-    const SUPPLY=19897905;
-    let html='';
-    const blipData=[];
+    const data = await res.json();
+    const accounts = data?.result?.value;
+    if(!accounts||!accounts.length) {
+      wrap.innerHTML='<div class="error-row">Holder data unavailable from RPC.</div>';
+      return;
+    }
+    const SUPPLY = 19897905;
+    let html='<table class="holders-table"><thead><tr><th>#</th><th>Wallet</th><th style="text-align:right">Balance</th><th style="text-align:right">% Supply</th></tr></thead><tbody>';
     accounts.slice(0,10).forEach((acct,i)=>{
-      const bal=parseFloat(acct.uiAmount)||0;
-      const pct=(bal/SUPPLY*100);
-      blipData.push(pct);
-      const barW=Math.min(100,pct);
-      html+=`<div class="reg-row" style="display:grid;grid-template-columns:36px 1fr 100px 130px">
-        <span class="reg-rank">${String(i+1).padStart(2,'0')}</span>
-        <span class="reg-wallet">${shortAddr(acct.address)}</span>
-        <span class="reg-amt">${fmtNum(bal)}</span>
-        <span class="reg-pctwrap"><span class="reg-pct">${pct.toFixed(2)}%</span><span class="reg-bar-track"><span class="reg-bar-fill" style="width:${barW}%"></span></span></span>
-      </div>`;
+      const bal = parseFloat(acct.uiAmount)||0;
+      const pct = (bal/SUPPLY*100).toFixed(2);
+      const barW = Math.min(100,parseFloat(pct));
+      html+=`<tr>
+        <td class="rank">${i+1}</td>
+        <td class="wallet">${shortAddr(acct.address)}</td>
+        <td class="amount-cell">${fmtNum(bal)}</td>
+        <td class="pct">${pct}%<span class="pct-bar-wrap"><span class="pct-bar" style="width:${barW}%"></span></span></td>
+      </tr>`;
     });
+    html+='</tbody></table>';
     wrap.innerHTML=html;
-    plotBlips(blipData);
-  }catch(e){
-    wrap.innerHTML='<div class="error-row">RPC LINK FAILED — RE-SCAN TO RETRY</div>';
-    plotBlips([]);
+  } catch(e) {
+    wrap.innerHTML='<div class="error-row">Could not load holder data. RPC may be rate-limited — try refreshing.</div>';
   }
 }
 
-// Plot holder blips on radar at radius proportional to % supply
-function plotBlips(pcts){
-  const layer=document.getElementById('blipLayer');
-  layer.innerHTML='';
-  if(!pcts.length) return;
-  const maxPct=Math.max(...pcts,1);
-  pcts.forEach((pct,i)=>{
-    const isWhale=pct>maxPct*0.5;
-    // radius: bigger holders closer to center (higher threat/signal proximity)
-    const norm=pct/maxPct;
-    const radiusPct=32+(1-norm)*58; // 32%..90% of half-box
-    const angle=(i/pcts.length)*2*Math.PI + (i*0.7);
-    const x=50+Math.cos(angle)*radiusPct/2;
-    const y=50+Math.sin(angle)*radiusPct/2;
-    const blip=document.createElement('div');
-    blip.className='radar-blip'+(isWhale?' whale':'');
-    blip.style.left=x+'%';
-    blip.style.top=y+'%';
-    blip.style.animationDelay=(i*0.15)+'s';
-    blip.title=`Contact ${i+1}: ${pct.toFixed(2)}% supply`;
-    layer.appendChild(blip);
-  });
-}
+// ── Live TX feed via DexScreener ────────────────────────
+async function fetchTxFeed(pair) {
+  const feed = document.getElementById('txFeed');
+  if(!pair || !pair.pairAddress) {
+    feed.innerHTML='<div class="error-row">No pair found for live transactions.</div>';
+    return;
+  }
+  try {
+    const res = await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${pair.pairAddress}`);
+    const data = await res.json();
+    const txns = data?.pair?.txns;
+    if(!txns) {
+      feed.innerHTML='<div class="error-row">Transaction feed unavailable.</div>';
+      return;
+    }
 
-async function fetchTxFeed(pair){
-  const feed=document.getElementById('txFeed');
-  if(!pair||!pair.pairAddress){ feed.innerHTML='<div class="error-row">NO PAIR FOUND FOR SIGNAL FEED</div>'; return; }
-  try{
-    const res=await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${pair.pairAddress}`);
-    const data=await res.json();
-    const txns=data?.pair?.txns;
-    if(!txns){ feed.innerHTML='<div class="error-row">SIGNAL FEED UNAVAILABLE</div>'; return; }
-    const price=parseFloat(pair.priceUsd)||0;
-    const buys24=txns.h24?.buys||0;
-    const sells24=txns.h24?.sells||0;
-    const vol24=pair.volume?.h24||0;
-    const avgTx=buys24+sells24>0?vol24/(buys24+sells24):0;
-    if(buys24+sells24===0){ feed.innerHTML='<div class="error-row">NO TRAFFIC INTERCEPTED IN 24H</div>'; return; }
+    // Simulate rows from available data
+    const price = parseFloat(pair.priceUsd)||0;
+    const buys24 = txns.h24?.buys||0;
+    const sells24 = txns.h24?.sells||0;
+    const vol24 = pair.volume?.h24||0;
+    const avgTx = buys24+sells24>0 ? vol24/(buys24+sells24) : 0;
+
+    if(buys24+sells24===0){
+      feed.innerHTML='<div class="error-row">No transactions in 24H.</div>';
+      return;
+    }
+
     const rows=[];
     const total=Math.min(12,buys24+sells24);
     const buyRatio=buys24/(buys24+sells24);
@@ -723,33 +709,41 @@ async function fetchTxFeed(pair){
       rows.push({isBuy,usdAmt,tokenAmt,secAgo:Date.now()-secAgo*1000,addr:fakeAddr+'...'+['k3m2','p9xL','b4nQ','h7rW'][i%4]});
     }
     rows.sort((a,b)=>b.secAgo-a.secAgo);
-    feed.innerHTML=rows.map(r=>`
-      <div class="tlog-row">
-        <span class="${r.isBuy?'tag-in':'tag-out'}">${r.isBuy?'IN':'OUT'}</span>
-        <span class="tlog-addr">${r.addr}</span>
-        <span class="tlog-amt">${fmtNum(Math.round(r.tokenAmt))}</span>
-        <span class="tlog-usd">${fmt(r.usdAmt)}</span>
-        <span class="tlog-time">${timeAgo(r.secAgo)}</span>
-      </div>`).join('');
-  }catch(e){
-    feed.innerHTML='<div class="error-row">SIGNAL FEED LINK FAILED</div>';
+
+    feed.innerHTML = rows.map(r=>`
+      <div class="tx-row">
+        <span class="${r.isBuy?'tx-type-buy':'tx-type-sell'}">${r.isBuy?'BUY':'SELL'}</span>
+        <span class="tx-addr">${r.addr}</span>
+        <span class="tx-amount">${fmtNum(Math.round(r.tokenAmt))}</span>
+        <span class="tx-usd">${fmt(r.usdAmt)}</span>
+        <span class="tx-time">${timeAgo(r.secAgo)}</span>
+      </div>
+    `).join('');
+  } catch(e) {
+    feed.innerHTML='<div class="error-row">Could not load transaction feed.</div>';
   }
 }
 
-async function fetchAll(){
-  document.getElementById('lastUpdated').textContent='SYNCING...';
-  const pair=await fetchDexScreener();
-  pairData=pair;
+// ── Main fetch orchestrator ──────────────────────────────
+async function fetchAll() {
+  document.getElementById('lastUpdated').textContent='Updating...';
+
+  const pair = await fetchDexScreener();
+  pairData = pair;
+
   renderStats(pair);
   renderChart(pair);
   await fetchTxFeed(pair);
   await fetchHolders();
+
   const now=new Date();
-  document.getElementById('lastUpdated').textContent='SYNC '+now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('lastUpdated').textContent=
+    'Updated '+now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 
+// ── Boot & auto-refresh ──────────────────────────────────
 fetchAll();
-setInterval(fetchAll,30000);
+setInterval(fetchAll, 30000);
 </script>
 </body>
 </html>
